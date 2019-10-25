@@ -6,9 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class Item {
-	private String itemId;
 	private String name;
 	private double rating;
 	private String address;
@@ -16,21 +14,7 @@ public class Item {
 	private String imageUrl;
 	private String url;
 	private double distance;
-	
-	/**
-	 * This is a builder pattern in Java.
-	 */
-	private Item(ItemBuilder builder) {
-		this.itemId = builder.itemId;
-		this.name = builder.name;
-		this.rating = builder.rating;
-		this.address = builder.address;
-		this.categories = builder.categories;
-		this.imageUrl = builder.imageUrl;
-		this.url = builder.url;
-		this.distance = builder.distance;
-	}
-
+	private String itemId;
 	
 	public String getItemId() {
 		return itemId;
@@ -57,6 +41,18 @@ public class Item {
 		return distance;
 	}
 	
+	private Item(ItemBuilder builder) {
+		this.itemId = builder.itemId;
+		this.name = builder.name;
+		this.rating = builder.rating;
+		this.address = builder.address;
+		this.categories = builder.categories;
+		this.imageUrl = builder.imageUrl;
+		this.url = builder.url;
+		this.distance = builder.distance;
+	}
+
+	
 	public JSONObject toJSONObject() {
 		JSONObject obj = new JSONObject();
 		try {
@@ -69,6 +65,7 @@ public class Item {
 			obj.put("url", url);
 			obj.put("distance", distance);
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return obj;
@@ -84,35 +81,35 @@ public class Item {
 		private String url;
 		private double distance;
 		
-		public String getItemId() {
-			return itemId;
+		public void setItemId(String itemId) {
+			this.itemId = itemId;
 		}
-		public String getName() {
-			return name;
+		public void setName(String name) {
+			this.name = name;
 		}
-		public double getRating() {
-			return rating;
+		public void setRating(double rating) {
+			this.rating = rating;
 		}
-		public String getAddress() {
-			return address;
+		public void setAddress(String address) {
+			this.address = address;
 		}
-		public Set<String> getCategories() {
-			return categories;
+		public void setCategories(Set<String> categories) {
+			this.categories = categories;
 		}
-		public String getImageUrl() {
-			return imageUrl;
+		public void setImageUrl(String imageUrl) {
+			this.imageUrl = imageUrl;
 		}
-		public String getUrl() {
-			return url;
+		public void setUrl(String url) {
+			this.url = url;
 		}
-		public double getDistance() {
-			return distance;
+		public void setDistance(double distance) {
+			this.distance = distance;
 		}
+
 		
 		public Item build() {
 			return new Item(this);
 		}
-		
 	}
 
 
