@@ -44,8 +44,7 @@ public class SearchItem extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		writer.print(array);
-		writer.close();
+		RpcHelper.writeJsonArray(response, array);
 	}
 
 	/**
