@@ -1,7 +1,7 @@
 package rpc;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,24 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import entity.Item;
-import recommendation.GeoRecommendation;
-
+import db.DBConnection;
+import db.DBConnectionFactory;
 
 /**
- * Servlet implementation class RecommendItem
+ * Servlet implementation class Register
  */
-@WebServlet("/recommendation")
-public class RecommendItem extends HttpServlet {
+@WebServlet("/register")
+public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public RecommendItem() {
+    public Register() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,25 +37,7 @@ public class RecommendItem extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		HttpSession session = request.getSession(false);
-		if (session == null) {
-			response.setStatus(403);
-			return;
-		}
-		String userId = session.getAttribute("user_id").toString();
-		// String userId = request.getParameter("user_id");
-
-		double lat = Double.parseDouble(request.getParameter("lat"));
-		double lon = Double.parseDouble(request.getParameter("lon"));
-
-		GeoRecommendation recommendation = new GeoRecommendation();
-		List<Item> items = recommendation.recommendItems(userId, lat, lon);
-		JSONArray array = new JSONArray();
-		for (Item item : items) {
-			array.put(item.toJSONObject());
-		}
-		RpcHelper.writeJsonArray(response, array);
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -66,6 +46,26 @@ public class RecommendItem extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		DBConnection connection = DBConnectionFactory.getConnection();
+	  	try {
+	  		JSONObject input = RpcHelper.readJSONObject(request);
+	  		String userId = input.getString("user_id");
+	  		String password = input.getString("password");
+			String firstname = input.getString("first_name");
+			String lastname = input.getString("last_name");
+			
+			boolean status = connection.registerUser(userId, password, firstname, lastname);
+			if (status) {
+				RpcHelper.writeJsonObject(response, new JSONObject().put("status", "OK"));
+			}else {
+				RpcHelper.writeJsonObject(response, new JSONObject().put("status", "User Already Exists or Invalid Input"));
+			}
+	  		
+	  	 } catch (Exception e) {
+	  		 e.printStackTrace();
+	  	 } finally {
+	  		 connection.close();
+	  	 }
 	}
 
 }
